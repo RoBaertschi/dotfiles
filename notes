@@ -1,0 +1,14 @@
+# powerprofile deamon
+
+doas emerge -av sys-power/power-profiles-daemon
+doas rc-update add power-profiles-daemon default
+doas rc-service power-profiles-daemon start
+
+# waybar
+pipewire setup per user services
+background for sway
+output management, maybe through profile selection
+playerctl
+foot set fish as standard shell
+
+swayidle

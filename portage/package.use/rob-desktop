@@ -1,0 +1,7 @@
+# Desktop
+gui-wm/sway wallpapers
+gui-apps/swaybg gdk-pixbuf
+
+# Bar
+gui-apps/waybar tray keyboardstate evdev backlight mpd mpris network pipewire pulseaudio upower wifi
+media-fonts/nerd-fonts X jetbrainsmono

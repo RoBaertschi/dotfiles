@@ -1,0 +1,39 @@
+# Desktop
+gui-apps/mako
+gui-apps/swayidle
+gui-apps/swaylock
+gui-apps/wl-clipboard
+gui-apps/wmenu
+gui-wm/sway
+sys-power/power-profiles-daemon
+x11-themes/bibata-cursor-theme
+
+# Bar
+gui-apps/waybar
+media-fonts/nerd-fonts
+media-sound/pavucontrol
+media-sound/playerctl
+
+# Terminal
+gui-apps/foot
+app-editors/neovim
+app-misc/fastfetch
+app-shells/fish
+dev-util/github-cli
+dev-util/scc
+dev-util/tree-sitter-cli
+dev-vcs/jj
+sys-apps/ripgrep
+
+# Browser
+www-client/firefox-bin
+media-video/ffmpeg
+
+# Audio
+media-sound/pavucontrol
+media-sound/playerctl
+media-video/pipewire
+media-video/wireplumber
+
+# System
+app-eselect/eselect-repository
