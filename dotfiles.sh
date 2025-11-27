@@ -18,6 +18,11 @@ cp -r ./sway/ ~/.config/sway
 rm -r ~/.config/waybar
 cp -r ./waybar/ ~/.config/waybar
 
+rm ~/.emacs
+cp ./emacs/.emacs ~/.emacs
+rm -r ~/.emacs.d
+cp -r ./emacs/.emacs.d ~/.emacs.d
+
 install_portage_file package.use/rob-desktop
 install_portage_file package.accept_keywords/rob-desktop
 install_portage_file sets/rob-desktop
