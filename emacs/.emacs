@@ -33,7 +33,11 @@
  use-package-always-ensure t
  use-package-verbose t)
 
-(use-package exec-path-from-shell :config (exec-path-from-shell-initialize))
+(unless (eq system-type 'windows-nt)
+  (use-package exec-path-from-shell :config (exec-path-from-shell-initialize)))
+
+(setq inhibit-splash-screen t)
+
 (use-package doom-themes :init
   (load-theme 'doom-one))
 
@@ -41,10 +45,13 @@
   :init
   (setq evil-undo-system 'undo-redo
 	evil-toggle-key "C-z"
-	evil-want-C-u-scroll t)
+	evil-want-C-u-scroll t
+	evil-want-keybinding nil)
   (modify-syntax-entry ?_ "w")
   :config
   (evil-mode 1))
+
+(use-package evil-collection :init (evil-collection-init))
 
 (use-package ivy
   :init
@@ -58,5 +65,10 @@
   :init
   (counsel-mode 1)
   :bind (:map ivy-minibuffer-map))
+
+(setq auth-sources '("~/.authinfo"))
+
+(use-package magit)
+(use-package forge :after magit)
 
 (load "~/.emacs.d/odin-mode.el")
