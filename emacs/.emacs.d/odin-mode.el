@@ -126,6 +126,47 @@
     ;; Constants
     (,(regexp-opt odin-constants 'symbols) . font-lock-constant-face)))
 
+(defun odin-line-is-defun ()
+  "return t if current line begins a procedure"
+  (interactive)
+  (save-excursion
+    (beginning-of-line)
+    (let (found)
+      (while (and (not (eolp)) (not found))
+        (if (looking-at odin--defun-rx)
+            (setq found t)
+          (forward-char 1)))
+      found)))
+
+;; todo: is an optional count argument needed. If so for what?
+(defun odin-beginning-of-defun ()
+  "Go to line on which current function starts."
+  (interactive)
+  (let ((orig-level (odin-paren-level)))
+    (while (and
+            (not (odin-line-is-defun))
+            (not (bobp))
+            (> orig-level 0))
+      (setq orig-level (odin-paren-level))
+      (while (>= (odin-paren-level) orig-level)
+        (skip-chars-backward "^{")
+        (backward-char))))
+  (if (odin-line-is-defun)
+      (beginning-of-line)))
+
+(defun odin-end-of-defun ()
+  "Go to line on which current function ends."
+  (interactive)
+  (let ((orig-level (odin-paren-level)))
+    (when (> orig-level 0)
+      (odin-beginning-of-defun)
+      (end-of-line)
+      (setq orig-level (odin-paren-level))
+      (skip-chars-forward "^}")
+      (while (>= (odin-paren-level) orig-level)
+        (skip-chars-forward "^}")
+        (forward-char)))))
+
 (defun odin--previous-non-empty-line ()
   "Returns either NIL when there is no such line or a pair (line . indentation)"
   (save-excursion
@@ -193,6 +234,51 @@
       (indent-line-to desired-indentation)
       (forward-char n))))
 
+
+;; Imenu
+
+(defconst odin-proc-directives
+  '("#force_inline"
+    "#force_no_inline"
+    "#type")
+  "Directives that can appear before a proc declaration")
+
+(defun odin-wrap-word-rx (s)
+  (concat "\\<" s "\\>"))
+
+(defun odin-wrap-keyword-rx (s)
+  (concat "\\(?:\\S.\\_<\\|\\`\\)" s "\\_>"))
+
+(defun odin-wrap-directive-rx (s)
+  (concat "\\_<" s "\\>"))
+
+(defun odin-wrap-attribute-rx (s)
+  (concat "[[:space:]\n]*@[[:space:]\n]*(?[[:space:]\n]*" s "\\>"))
+
+(defun odin-keywords-rx (keywords)
+  "build keyword regexp"
+  (odin-wrap-keyword-rx (regexp-opt keywords t)))
+
+(defun odin-directives-rx (directives)
+  (odin-wrap-directive-rx (regexp-opt directives t)))
+
+(defun odin-attributes-rx (attributes)
+  (odin-wrap-attribute-rx (regexp-opt attributes t)))
+
+(defconst odin-identifier-rx "[[:word:][:multibyte:]_]+")
+(defconst odin-hat-type-rx (rx (group (and "^" (1+ (any word "." "_"))))))
+(defconst odin-dollar-type-rx (rx (group "$" (or (1+ (any word "_")) (opt "$")))))
+(defconst odin-number-rx
+  (rx (and
+       symbol-start
+       (or (and (+ digit) (opt (and (any "eE") (opt (any "-+")) (+ digit))))
+           (and "0" (any "xX") (+ hex-digit)))
+       (opt (and (any "_" "A-Z" "a-z") (* (any "_" "A-Z" "a-z" "0-9"))))
+       symbol-end)))
+
+(defconst odin-proc-rx (concat "\\(\\_<" odin-identifier-rx "\\_>\\)\\s *::\\s *\\(" (odin-directives-rx odin-proc-directives) "\\)?\\s *\\_<proc\\_>"))
+(defconst odin-type-rx (concat "\\_<\\(" odin-identifier-rx "\\)\\s *::\\s *\\(?:struct\\|enum\\|union\\|distinct\\)\\s *\\_>"))
+
 ;;;###autoload
 (define-derived-mode odin-mode
   prog-mode "Odin"
@@ -207,6 +293,13 @@
   (setq-local comment-start-skip "\\(//+\\|/\\*+\\)\\s *")
   (setq-local comment-start "/*")
   (setq-local comment-end "*/")
+
+  (setq-local beginning-of-defun-function 'odin-beginning-of-defun)
+  (setq-local end-of-defun-function 'odin-end-of-defun)
+
+  (setq imenu-generic-expression
+        `(("type" ,(concat "^" odin-type-rx) 1)
+          ("proc" ,(concat "^" odin-proc-rx) 1)))
 
   (setq-local indent-line-function #'odin-indent-line)
 
@@ -254,6 +347,29 @@ current project directory is always passed as the first argument."
   (odin--project-cmd "test"))
 
 (provide 'odin-mode)
+
+;; Lsp-mode configuration
+(defcustom odin-language-server-executable "ols"
+  "Executable to run odin-lsp. Default: ols"
+  :type 'string
+  :group 'odin)
+
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+	       '(odin-mode . ("ols"))))
+
+(with-eval-after-load 'lsp-mode
+  (when (and (boundp 'lsp-language-id-configuration)
+             (fboundp 'lsp-register-client)
+             (fboundp 'make-lsp-client)
+             (fboundp 'lsp-stdio-connection)
+             (fboundp 'lsp-activate-on))
+    (add-to-list 'lsp-language-id-configuration
+	             '(odin-mode . "odin"))
+    (lsp-register-client
+     (make-lsp-client :new-connection (lsp-stdio-connection odin-language-server-executable)
+		              :activation-fn  (lsp-activate-on "odin")
+		              :server-id      'ols))))
 
 ;;; odin-mode.el ends here
 

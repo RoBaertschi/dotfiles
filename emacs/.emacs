@@ -71,4 +71,28 @@
 (use-package magit)
 (use-package forge :after magit)
 
+(unless (package-installed-p 'eglot-booster)
+  (package-vc-install "https://github.com/jdtsmith/eglot-booster.git"))
+
+(use-package eglot-booster
+  :after eglot
+  :config (eglot-booster-mode))
+
+(use-package company
+  :hook ((prog-mode . company-mode))
+  :config
+  (setq company-minimum-prefix-length 0
+	company-idle-delay 0.01
+	company-dabbrev-downcase 0)
+  :bind (:map company-active-map
+	      ("<TAB>" . nil)
+	      ([tab] . nil)
+	      ("C-y" . company-complete-selection)))
+
+
+
+(use-package company-box
+  :after company
+  :config (company-box-mode))
+
 (load "~/.emacs.d/odin-mode.el")
