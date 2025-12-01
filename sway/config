@@ -16,7 +16,7 @@ set $right l
 # Your preferred terminal emulator
 set $term footclient
 # Your preferred application launcher
-set $menu wmenu-run
+set $menu walker
 
 set $lock swaylock --ignore-empty-password --show-failed-attempts --color 1e1e1e
 
@@ -49,6 +49,15 @@ exec mako
 
 ### Foot server
 exec foot -s
+
+### Emacs
+
+exec emacs --fg-daemon
+
+### Walker config
+
+exec elephant
+exec walker --gapplication-service
 
 ### Idle configuration
 #
@@ -91,6 +100,8 @@ input type:touchpad {
     natural_scroll enabled
 }
 
+input "type:keyboard" xkb_options caps:ctrl_modifier
+
 input type:keyboard {
     xkb_layout "ch"
 }
@@ -107,6 +118,9 @@ input type:keyboard {
 
     # Start your launcher
     bindsym $mod+d exec $menu
+
+    # Screenshot
+    bindsym Print exec grim -g "$(slurp)" -t png - | wl-copy -t image/png
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -248,7 +262,7 @@ bindsym $mod+r mode "resize"
     bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
     bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
     # Special key to take a screenshot with grim
-    bindsym Print exec grim
+    # bindsym Print exec grim
     # Special key to lock device
     bindsym $mod+Escape exec $lock
     # Player control

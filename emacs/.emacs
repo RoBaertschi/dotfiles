@@ -4,6 +4,40 @@
 (global-display-line-numbers-mode 1)
 (setq display-line-numbers-type 'relative)
 
+;; Use spaces instead of tabs
+(defadvice align-regexp (around align-regexp-with-spaces activate)
+  (let ((indent-tabs-mode nil))
+    ad-do-it))
+
+(defun backup-dir (dir)
+  `(("" .
+     ,(expand-file-name
+       (concat user-emacs-directory dir)))))
+
+(setq backup-directory-alist (backup-dir "backup/per-save"))
+
+(defun force-backup-of-buffer ()
+  (when (not buffer-backed-up)
+    (let ((backup-directory-alist (backup-dir "backup/per-session"))
+	   (kept-new-versions 3))
+      (backup-buffer)))
+  (let ((buffer-backed-up nil))
+    (backup-buffer)))
+
+(add-hook 'before-save-hook 'force-backup-of-buffer)
+
+(setq auto-save-file-name-transforms
+      `((".*"
+	 ,(expand-file-name (concat user-emacs-directory "autosaves"))
+	   t)))
+
+(setq delete-old-versions t
+      kept-new-versions 6
+      kept-old-versions 2
+      version-control t
+      backup-by-copying t
+      vc-make-backup-files t)
+
 (setq custom-file  "~/.emacs.d/custom.el")
 (load custom-file 'noerror)
 
@@ -78,12 +112,19 @@
   :after eglot
   :config (eglot-booster-mode))
 
+(use-package eldoc-box
+  :config
+  (add-hook 'eglot-managed-mode-hook #'eldoc-box-hover-mode t)
+  (eldoc-box-hover-at-point-mode))
+
 (use-package company
   :hook ((prog-mode . company-mode))
   :config
   (setq company-minimum-prefix-length 0
 	company-idle-delay 0.01
-	company-dabbrev-downcase 0)
+	company-dabbrev-downcase 0
+	company-format-margin-function 'company-dot-icons-margin
+	company-frontends '(company-pseudo-tooltip-frontend company-echo-metadata-frontend))
   :bind (:map company-active-map
 	      ("<TAB>" . nil)
 	      ([tab] . nil)
@@ -91,8 +132,8 @@
 
 
 
-(use-package company-box
-  :after company
-  :config (company-box-mode))
+;; (use-package company-box
+;;   :after company
+;;   :config (company-box-mode))
 
 (load "~/.emacs.d/odin-mode.el")

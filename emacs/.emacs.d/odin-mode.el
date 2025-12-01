@@ -197,6 +197,9 @@
         (cons (thing-at-point 'line t)
               (current-indentation))))))
 
+(defun odin--string-match-case (line)
+  (string-match-p "^\\s-*case.*:.*$" line))
+
 (defun odin--desired-indentation ()
   (let ((prev (odin--previous-non-empty-line)))
     (if (not prev)
@@ -207,7 +210,7 @@
             (prev-indent (cdr prev)))
         (cond
          ((or
-	   (string-match-p "^\\s-*switch\\s-*(.+)" prev-line)
+	   (string-match-p "^\\s-*switch\\s-*.+" prev-line)
 	   (string-match-p "^\\s-*switch\\s-*.+\\s-*in\\s-*.+" prev-line))
           prev-indent)
          ((and (string-suffix-p "{" prev-line)
@@ -217,11 +220,11 @@
           (+ prev-indent indent-len))
          ((string-prefix-p "}" (string-trim-left cur-line))
           (max (- prev-indent indent-len) 0))
-         ((string-suffix-p ":" prev-line)
-          (if (string-suffix-p ":" cur-line)
+         ((odin--string-match-case prev-line)
+          (if (odin--string-match-case cur-line)
               prev-indent
             (+ prev-indent indent-len)))
-         ((string-suffix-p ":" cur-line)
+         ((odin--string-match-case cur-line)
           (max (- prev-indent indent-len) 0))
          (t prev-indent))))))
 
