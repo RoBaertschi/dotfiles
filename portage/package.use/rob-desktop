@@ -5,3 +5,10 @@ gui-apps/swaybg gdk-pixbuf
 # Bar
 gui-apps/waybar tray keyboardstate evdev backlight mpd mpris network pipewire pulseaudio upower wifi
 media-fonts/nerd-fonts X jetbrainsmono
+
+# Emacs
+sys-devel/gcc jit
+app-editors/emacs gui gtk -X tree-sitter sqlite jit libxml2
+
+# Walker
+sys-apps/elephant calc clipboard desktopapplications files menus providerlist runner symbols todo unicode websearch windows
