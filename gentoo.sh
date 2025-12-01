@@ -10,6 +10,7 @@ install_portage_file() {
     doas cp ./portage/$name /etc/portage/$name
 }
 
+doas cat ./portage/categories/rob-desktop >> /etc/portage/categories
 install_portage_file package.use/rob-desktop
 install_portage_file package.accept_keywords/rob-desktop
 install_portage_file sets/rob-desktop
@@ -21,6 +22,8 @@ repo() {
 }
 
 doas emerge -av -1 --noreplace app-eselect/eselect-repository
+doas eselect repository add robaertschi git https://github.com/RoBaertschi/gentoo-repo.git
+repo robaertschi
 repo gentoo-zh
 repo wayland-desktop
 

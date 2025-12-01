@@ -37,3 +37,12 @@ media-video/wireplumber
 
 # System
 app-eselect/eselect-repository
+
+# Walker
+sys-apps/elephant
+gui-apps/walker
+
+# Emacs
+dev-odin/ols
+app-editors/emacs
+app-editors/emacs-lsp-booster
