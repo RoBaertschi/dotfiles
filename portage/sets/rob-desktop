@@ -43,6 +43,6 @@ sys-apps/elephant
 gui-apps/walker
 
 # Emacs
-dev-odin/ols
+=dev-odin/ols-9999
 app-editors/emacs
 app-editors/emacs-lsp-booster
