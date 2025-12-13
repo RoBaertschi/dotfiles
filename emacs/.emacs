@@ -2,6 +2,8 @@
 (menu-bar-mode 0)
 (scroll-bar-mode 0)
 (global-display-line-numbers-mode 1)
+(editorconfig-mode)
+(set-language-environment "UTF-8")
 (setq display-line-numbers-type 'relative)
 
 ;; Use spaces instead of tabs
@@ -114,7 +116,7 @@
 
 (use-package eldoc-box
   :config
-  (add-hook 'eglot-managed-mode-hook #'eldoc-box-hover-mode t)
+  (add-hook 'eglot-managed-mode-hook #'eldoc-box-hover-at-point-mode t)
   (eldoc-box-hover-at-point-mode))
 
 (use-package company

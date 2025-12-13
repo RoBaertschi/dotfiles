@@ -126,6 +126,11 @@
     ;; Constants
     (,(regexp-opt odin-constants 'symbols) . font-lock-constant-face)))
 
+(defconst odin--defun-rx "\(.*\).*\{")
+
+(defmacro odin-paren-level ()
+  `(car (syntax-ppss)))
+
 (defun odin-line-is-defun ()
   "return t if current line begins a procedure"
   (interactive)
@@ -220,6 +225,10 @@
           (+ prev-indent indent-len))
          ((string-prefix-p "}" (string-trim-left cur-line))
           (max (- prev-indent indent-len) 0))
+         ((string-suffix-p "(" prev-line)
+          (+ prev-indent indent-len))
+         ((string-prefix-p ")" (string-trim-left cur-line))
+          (max (- prev-indent indent-len) 0))
          ((odin--string-match-case prev-line)
           (if (odin--string-match-case cur-line)
               prev-indent
@@ -308,6 +317,11 @@
 
   (setq-local electric-indent-chars
               (append "{}():;," electric-indent-chars)))
+
+;; `compilation-mode' configuration
+
+(eval-after-load 'compile
+  '(add-to-list 'compilation-error-regexp-alist '("^\\(.*?\\)(\\([0-9]+\\):\\([0-9]+\\).*" 1 2 3)))
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.odin\\'" . odin-mode))
