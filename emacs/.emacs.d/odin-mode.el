@@ -39,6 +39,7 @@
   '("import" "foreign" "package"
     "where" "when" "if" "else" "for" "switch" "in" "do" "case"
     "break" "continue" "fallthrough" "defer" "return" "proc"
+    "or_else" "or_return" "or_continue" "or_break"
     "struct" "union" "enum" "bit_field" "bit_set" "map" "dynamic"
     "auto_cast" "cast" "transmute" "distinct" "opaque"
     "using" "inline" "no_inline"

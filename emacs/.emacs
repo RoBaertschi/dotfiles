@@ -119,6 +119,11 @@
   (add-hook 'eglot-managed-mode-hook #'eldoc-box-hover-at-point-mode t)
   (eldoc-box-hover-at-point-mode))
 
+(defun my-company-sort-by-length (candidates)
+  "Sort completion CANDIDATES by their length, shortest first."
+  (sort candidates
+        (lambda (a b) (< (length a) (length b)))))
+
 (use-package company
   :hook ((prog-mode . company-mode))
   :config
@@ -132,8 +137,29 @@
 	      ([tab] . nil)
 	      ("C-y" . company-complete-selection)))
 
+
 (use-package hl-todo
-  :config (global-hl-todo-mode))
+  :config
+  (global-hl-todo-mode)
+  (setq hl-todo-color-background nil
+	hl-todo-highlight-punctuation "(Rrobin):"))
+
+;; HOLD(Hello World) :
+;; TODO(robin):
+;; NEXT(\\w*):
+;; THEM: robin
+;; PROG:
+;; OKAY:
+;; DONT:
+;; FAIL:
+;; DONE:
+;; NOTE:
+;; MAYBE:
+;; KLUDGE:
+;; HACK:
+;; TEMP:
+;; FIXME:
+;; XXX:
 
 
 
