@@ -168,3 +168,9 @@
 ;;   :config (company-box-mode))
 
 (load "~/.emacs.d/odin-mode.el")
+(load "~/.emacs.d/simpc-mode.el")
+(add-to-list 'auto-mode-alist '("\\.[hc]\\(pp\\)?\\'" . simpc-mode))
+
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+	       '(simpc-mode . ("clangd"))))

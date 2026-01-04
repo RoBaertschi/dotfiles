@@ -28,3 +28,4 @@ link waybar ~/.config/waybar
 
 link emacs/.emacs ~/.emacs
 link emacs/.emacs.d/odin-mode.el ~/.emacs.d/odin-mode.el
+link emacs/.emacs.d/simpc-mode.el ~/.emacs.d/simpc-mode.el
