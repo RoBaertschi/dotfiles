@@ -41,8 +41,10 @@ output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
 output eDP-1 resolution 1920x1080@60.056hz position 0,0
 output DP-4 resolution 2560x1440@59.951hz position -2560,0
 
-output DP-2 resolution 3840x2160@120hz scale 1.5 position 0,0
-output DP-3 resolution 3440x1440@120hz position 2560,0
+output DP-3 resolution 3840x2160@120hz scale 1.5 position 0,0
+output DP-2 resolution 3440x1440@120hz position 2560,0
+
+workspace 1 output DP-2
 
 ### Notification deamon
 exec mako
@@ -120,6 +122,7 @@ input type:keyboard {
     bindsym $mod+d exec $menu
 
     # Screenshot
+    bindsym $mod+Shift+S exec grim -g "$(slurp)" -t png - | wl-copy -t image/png
     bindsym Print exec grim -g "$(slurp)" -t png - | wl-copy -t image/png
 
     # Drag floating windows by holding down $mod and left mouse button.
