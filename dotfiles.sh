@@ -25,6 +25,7 @@ mkdir -p ~/.config
 link foot ~/.config/foot
 link sway ~/.config/sway
 link waybar ~/.config/waybar
+link niri ~/.config/niri
 
 link emacs/.emacs ~/.emacs
 link emacs/.emacs.d/odin-mode.el ~/.emacs.d/odin-mode.el
